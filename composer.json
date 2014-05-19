@@ -1,0 +1,23 @@
+{
+  "author": [{
+    "email": "opalmer@me.com",
+    "homepage": "http://opalmer.me",
+    "name": "Oscar Palmér",
+    "role": "developer"
+  }],
+  "autoload": {
+    "psr-0": {
+      "Mordin": ["src/"]
+    }
+  },
+  "description": "Had to be me. Someone else might have gotten it wrong.",
+  "homepage": "http://git.io/mordin",
+  "keywords": [
+    "helper"
+  ],
+  "license": "MIT",
+  "name": "mordin/mordin",
+  "require": {
+    "php": ">=5.3.0"
+  }
+}
