@@ -1,6 +1,6 @@
 <?php
 
-namespace Mordin;
+namespace oscarpalmer\Mordin;
 
 class Mordin
 {

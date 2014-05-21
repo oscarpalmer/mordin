@@ -17,7 +17,7 @@ Mordin is available via Composer.
 ```json
 {
   "require": {
-    "mordin/mordin": "dev-master"
+    "oscarpalmer/mordin": "dev-master"
   }
 }
 ```
