@@ -12,7 +12,7 @@ class File
      */
     public static function create($file)
     {
-        if (is_string($file)) {
+        if (is_string($file) && file_exists($file) === false) {
             return self::write($file, "");
         }
 
@@ -27,7 +27,7 @@ class File
      */
     public static function delete($file)
     {
-        if (self::isFile($file)) {
+        if (self::exists($file)) {
             return unlink($file);
         }
 
@@ -35,14 +35,14 @@ class File
     }
 
     /**
-     * Check if it's a file.
+     * Check if a file or directory exists.
      *
-     * @param  mixed $file Variable to check.
+     * @param  mixed $item Variable to check.
      * @return bool  True if... well, if it's true.
      */
-    public static function isFile($file)
+    public static function exists($item)
     {
-        return is_string($file) && is_file($file);
+        return is_string($item) && file_exists($item);
     }
 
     /**
@@ -53,7 +53,7 @@ class File
      */
     public static function read($file)
     {
-        if (self::isFile($file)) {
+        if (self::exists($file) && is_file($file)) {
             return file_get_contents($file);
         }
 
@@ -69,7 +69,7 @@ class File
      */
     public static function rename($old, $new)
     {
-        if (self::isFile($old) && is_string($new)) {
+        if (self::exists($old) && is_string($new) && $old !== $new) {
             return rename($old, $new);
         }
 
@@ -90,7 +90,7 @@ class File
                 $data = json_encode($data);
             }
 
-            return file_put_contents($file, (string) $data, LOCK_EX) === false ? false : true;
+            return @file_put_contents($file, (string) $data, LOCK_EX) === false ? false : true;
         }
 
         return false;

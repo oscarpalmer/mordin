@@ -1,5 +1,6 @@
 # Mordin
 
+[![PHP version](https://badge.fury.io/ph/oscarpalmer%2Fmordin.svg)](http://badge.fury.io/ph/oscarpalmer%2Fmordin) [![Build Status](https://travis-ci.org/oscarpalmer/mordin.svg)](https://travis-ci.org/oscarpalmer/mordin) [![Coverage Status](https://img.shields.io/coveralls/oscarpalmer/mordin.svg)](https://coveralls.io/r/oscarpalmer/mordin)
 > Had to be me. Someone else might have gotten it wrong.
 
 &mdash; Mordin Solus
@@ -26,7 +27,6 @@ Mordin is available via Composer.
 
 - Everything...
 - ...and better errors.
-- ...and tests.
 
 ## License
 
