@@ -18,15 +18,14 @@ Mordin is available via Composer.
 ```json
 {
   "require": {
-    "oscarpalmer/mordin": "dev-master"
+    "oscarpalmer/mordin": "0.1.*"
   }
 }
 ```
 
 ## Todo
 
-- Everything...
-- ...and better errors.
+- Everything.
 
 ## License
 
