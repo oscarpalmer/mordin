@@ -8,41 +8,86 @@ class File
      * Create an empty file.
      *
      * @param  string $file File to create.
+     * @param  mixed  $data Optional data to write.
      * @return bool   True for success.
      */
-    public static function create($file)
+    public static function create($file, $data = "")
     {
-        if (is_string($file) && file_exists($file) === false) {
-            return self::write($file, "");
+        if (is_string($file) && is_file($file) === false) {
+            return self::write($file, $data);
         }
 
-        return false;
+        if (is_string($file) === false) {
+            throw new \InvalidArgumentException("Filename must be a string, " . gettype($file) . " given.");
+        }
+
+        throw new \LogicException("\"{$file}\" could not be created as it already exists.");
     }
 
     /**
-     * Delete a file.
+     * Delete a file or directory.
      *
-     * @param  string $file File to delete.
+     * @param  string $file File or directory to delete.
      * @return bool   True for success.
      */
     public static function delete($file)
     {
         if (self::exists($file)) {
-            return unlink($file);
+            if (is_file($file)) {
+                return unlink($file);
+            }
+
+            return rmdir($file);
         }
 
-        return false;
+        if (is_string($file) === false) {
+            throw new \InvalidArgumentException("Filename must be a string, " . gettype($file) . " given.");
+        }
+
+        throw new \LogicException("{$file} could not be deleted as it does not exist.");
     }
 
     /**
      * Check if a file or directory exists.
      *
      * @param  mixed $item Variable to check.
-     * @return bool  True if... well, if it's true.
+     * @return bool  True if it's a filename and the file or directory exists.
      */
     public static function exists($item)
     {
         return is_string($item) && file_exists($item);
+    }
+
+    /**
+     * Create a directory, either flat or recursively.
+     *
+     * @param  string $directory   Directory name.
+     * @param  mixed  $permissions Permissions for directory.
+     * @param  bool   $recursive   True for recursive directory creation.
+     * @return bool   True for success.
+     */
+    public static function mkdir($directory, $permissions = 0777, $recursive = true)
+    {
+        if (is_bool($permissions)) {
+            $recursive = $permissions;
+            $permissions = 0777;
+        }
+
+        if (is_string($directory) && is_numeric($permissions) && is_bool($recursive)) {
+            if (is_dir($directory) === false) {
+                return mkdir($directory, $permissions, $recursive);
+            }
+
+            throw new \LogicException("\"{$directory}\" could not be created as it already exists.");
+        }
+
+        if (is_string($directory) === false) {
+            throw new \InvalidArgumentException("Directory name must be a string, " . gettype($directory) . " given.");
+        } elseif (is_numeric($permissions) === false) {
+            throw new \InvalidArgumentException("Permissions must be numeric, " . gettype($permissions) . " given.");
+        }
+
+        throw new \InvalidArgumentException("Recursive value must be a boolean, " . gettype($recursive) . " given.");
     }
 
     /**
@@ -57,7 +102,7 @@ class File
             return file_get_contents($file);
         }
 
-        return false;
+        throw new \LogicException("The file \"{$file}\" does not exist.");
     }
 
     /**
@@ -69,11 +114,17 @@ class File
      */
     public static function rename($old, $new)
     {
-        if (self::exists($old) && is_string($new) && $old !== $new) {
+        if (self::exists($old) && is_string($new)) {
             return rename($old, $new);
         }
 
-        return false;
+        if (is_string($old) === false) {
+            throw new \InvalidArgumentException("The old filename must be a string, " . gettype($old) . " given.");
+        } else if (is_file($old) === false) {
+            throw new \LogicException("The file \"{$old}\" does not exist.");
+        }
+
+        throw new \InvalidArgumentException("The new filename must be a string, " . gettype($new) . " given.");
     }
 
     /**
@@ -93,6 +144,6 @@ class File
             return @file_put_contents($file, (string) $data, LOCK_EX) === false ? false : true;
         }
 
-        return false;
+        throw new \InvalidArgumentException("Filename must be a string, " . gettype($file) . " given.");
     }
 }
