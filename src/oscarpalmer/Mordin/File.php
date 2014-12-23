@@ -120,7 +120,7 @@ class File
 
         if (is_string($old) === false) {
             throw new \InvalidArgumentException("The old filename must be a string, " . gettype($old) . " given.");
-        } else if (is_file($old) === false) {
+        } elseif (is_file($old) === false) {
             throw new \LogicException("The file \"{$old}\" does not exist.");
         }
 
