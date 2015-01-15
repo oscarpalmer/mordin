@@ -13,15 +13,11 @@ class File
      */
     public static function create($file, $data = "")
     {
-        if (is_string($file) && is_file($file) === false) {
+        if (is_file($file) === false) {
             return self::write($file, $data);
         }
 
-        if (is_string($file) === false) {
-            throw new \InvalidArgumentException("Filename must be a string, " . gettype($file) . " given.");
-        }
-
-        throw new \LogicException("\"{$file}\" could not be created as it already exists.");
+        return false;
     }
 
     /**
@@ -40,18 +36,14 @@ class File
             return rmdir($file);
         }
 
-        if (is_string($file) === false) {
-            throw new \InvalidArgumentException("Filename must be a string, " . gettype($file) . " given.");
-        }
-
-        throw new \LogicException("{$file} could not be deleted as it does not exist.");
+        return false;
     }
 
     /**
      * Check if a file or directory exists.
      *
      * @param  mixed $item Variable to check.
-     * @return bool  True if it's a filename and the file or directory exists.
+     * @return bool  True if the file or directory exists.
      */
     public static function exists($item)
     {
@@ -73,21 +65,11 @@ class File
             $permissions = 0777;
         }
 
-        if (is_string($directory) && is_numeric($permissions) && is_bool($recursive)) {
-            if (is_dir($directory) === false) {
-                return mkdir($directory, $permissions, $recursive);
-            }
-
-            throw new \LogicException("\"{$directory}\" could not be created as it already exists.");
+        if (is_dir($directory) === false) {
+            return mkdir($directory, $permissions, $recursive);
         }
 
-        if (is_string($directory) === false) {
-            throw new \InvalidArgumentException("Directory name must be a string, " . gettype($directory) . " given.");
-        } elseif (is_numeric($permissions) === false) {
-            throw new \InvalidArgumentException("Permissions must be numeric, " . gettype($permissions) . " given.");
-        }
-
-        throw new \InvalidArgumentException("Recursive value must be a boolean, " . gettype($recursive) . " given.");
+        return false;
     }
 
     /**
@@ -102,7 +84,7 @@ class File
             return file_get_contents($file);
         }
 
-        throw new \LogicException("The file \"{$file}\" does not exist.");
+        return false;
     }
 
     /**
@@ -114,17 +96,29 @@ class File
      */
     public static function rename($old, $new)
     {
-        if (self::exists($old) && is_string($new)) {
+        if (self::exists($old) && self::exists($new) === false) {
             return rename($old, $new);
         }
 
-        if (is_string($old) === false) {
-            throw new \InvalidArgumentException("The old filename must be a string, " . gettype($old) . " given.");
-        } elseif (is_file($old) === false) {
-            throw new \LogicException("The file \"{$old}\" does not exist.");
+        return false;
+    }
+
+    /**
+     * Get the size of a file.
+     *
+     * @todo Parse file size into human readable format.
+     * @todo Weigh directories?
+     *
+     * @param string $file Filename to weigh.
+     * @return int   Filesize as an integer or false.
+     */
+    public static function size($file)
+    {
+        if (self::exists($file) && is_file($file)) {
+            return filesize($file);
         }
 
-        throw new \InvalidArgumentException("The new filename must be a string, " . gettype($new) . " given.");
+        return false;
     }
 
     /**
@@ -136,14 +130,10 @@ class File
      */
     public static function write($file, $data)
     {
-        if (is_string($file)) {
-            if (is_array($data) || is_object($data)) {
-                $data = json_encode($data);
-            }
-
-            return @file_put_contents($file, (string) $data, LOCK_EX) === false ? false : true;
+        if (is_array($data) || is_object($data)) {
+            $data = json_encode($data);
         }
 
-        throw new \InvalidArgumentException("Filename must be a string, " . gettype($file) . " given.");
+        return @file_put_contents($file, (string) $data, LOCK_EX) === false ? false : true;
     }
 }

@@ -13,6 +13,10 @@ class FileTest extends \PHPUnit_Framework_TestCase
         if (file_exists($this->dir) === false) {
             mkdir($this->dir);
         }
+
+        if (file_exists($this->dir . "/test_create_error") === false) {
+            file_put_contents($this->dir . "/test_create_error", "");
+        }
     }
 
     public function tearDown()
@@ -37,30 +41,8 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($create);
         $this->assertTrue($delete);
 
-        try {
-            File::create(1234);
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("InvalidArgumentException", $e);
-        }
-
-        try {
-            File::create("{$this->dir}/test_create_error");
-            File::create("{$this->dir}/test_create_error");
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("LogicException", $e);
-        }
-
-        try {
-            File::delete(1234);
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("InvalidArgumentException", $e);
-        }
-
-        try {
-            File::delete("{$this->dir}/not_a_file");
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("LogicException", $e);
-        }
+        $this->assertFalse(File::create("{$this->dir}/test_create_error"));
+        $this->assertFalse(File::delete("{$this->dir}/test_delete_error"));
 
         File::create("{$this->dir}/test_permissions_error");
         chmod("{$this->dir}/test_permissions_error", 0000);
@@ -84,29 +66,8 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $create = File::mkdir("{$this->dir}/_mkdir_", false);
         $this->assertTrue($create);
 
-        try {
-            File::mkdir("{$this->dir}/_mkdir_");
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("LogicException", $e);
-        }
-
-        try {
-            File::mkdir(1234);
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("InvalidArgumentException", $e);
-        }
-
-        try {
-            File::mkdir("{$this->dir}/_mkdir_", "permissions");
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("InvalidArgumentException", $e);
-        }
-
-        try {
-            File::mkdir("{$this->dir}/_mkdir_", 0777, "recursive");
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("InvalidArgumentException", $e);
-        }
+        $create = File::mkdir("{$this->dir}/_mkdir_");
+        $this->assertFalse($create);
     }
 
     public function testReadAndWrite()
@@ -117,17 +78,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($write);
         $this->assertEquals($read, "Testing, testing...");
 
-        try {
-            File::read("not_a_file");
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("LogicException", $e);
-        }
-
-        try {
-            File::write(1234, 5678);
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("InvalidArgumentException", $e);
-        }
+        $this->assertFalse(File::read("{$this->dir}/not_a_file  "));
     }
 
     public function testRename()
@@ -138,23 +89,16 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(File::exists("{$this->dir}/rename_test_new"));
         $this->assertFalse(File::exists("{$this->dir}/rename_test"));
 
-        try {
-            File::rename(1234, "new_name");
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("InvalidArgumentException", $e);
-        }
+        File::create("{$this->dir}/rename_test_xxx");
+        $this->assertFalse(File::rename("{$this->dir}/rename_test_new", "{$this->dir}/rename_test_xxx"));
+    }
 
-        try {
-            File::rename("not_a_file", "new_name");
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("LogicException", $e);
-        }
+    public function testSize()
+    {
+        File::create("{$this->dir}/test_size", "these are words.");
 
-        try {
-            File::rename("{$this->dir}/rename_test_new", 1234);
-        } catch (\Exception $e) {
-            $this->assertInstanceOf("InvalidArgumentException", $e);
-        }
+        $this->assertSame(16, File::size("{$this->dir}/test_size"));
+        $this->assertFalse(File::size("{$this->dir}/not_a_file"));
     }
 
     public function testWriteArrayAndObject()

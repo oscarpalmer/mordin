@@ -8,7 +8,7 @@ class Arr
      * Get first element of array.
      *
      * @param  array $array Array to search.
-     * @return mixed First element.
+     * @return mixed First element or false.
      */
     public static function first(array $array)
     {
@@ -16,7 +16,7 @@ class Arr
             return array_shift($array);
         }
 
-        throw new \LogicException("The supplied array is empty.");
+        return false;
     }
 
     /**
@@ -25,21 +25,15 @@ class Arr
      * @param  array      $array   Array to search.
      * @param  int|string $key     Key for element.
      * @param  mixed      $default Default value.
-     * @return mixed Value for element or default value.
+     * @return mixed      Value for element or a default value.
      */
     public static function get(array $array, $key, $default = null)
     {
-        if (is_int($key) || is_string($key)) {
-            if (array_key_exists($key, $array)) {
-                return $array[$key];
-            }
-
-            return $default;
+        if (array_key_exists($key, $array)) {
+            return $array[$key];
         }
 
-        $prefix = "Key must be of type \"integer\" or \"string\", \"";
-
-        throw new \InvalidArgumentException($prefix . gettype($key) . "\" given.");
+        return $default;
     }
 
     /**
@@ -57,7 +51,7 @@ class Arr
      * Get last element of Array.
      *
      * @param  array Array to search.
-     * @return mixed Last element.
+     * @return mixed Last element or false.
      */
     public static function last(array $array)
     {
@@ -65,33 +59,27 @@ class Arr
             return array_pop($array);
         }
 
-        throw new \LogicException("The supplied array is empty.");
+        return false;
     }
 
     /**
      * Merge one array with another.
      *
-     * @param  array  $to       Destination array.
-     * @param  array  $from     Departure array.
-     * @param  bool   $override True to override destination keys.
-     * @return array Merged array.
+     * @param  array $to       Destination array.
+     * @param  array $from     Departure array.
+     * @param  bool  $override True to override destination keys.
+     * @return array Merged array or false.
      */
     public static function merge(array $to, array $from, $override = false)
     {
-        if (is_bool($override)) {
-            foreach ($from as $key => $value) {
-                if (array_key_exists($key, $to) && $override === false) {
-                    continue;
-                }
-
-                $to[$key] = $value;
+        foreach ($from as $key => $value) {
+            if (array_key_exists($key, $to) && $override !== true) {
+                continue;
             }
 
-            return $to;
+            $to[$key] = $value;
         }
 
-        $prefix = "Override value must be of type \"boolean\", \"";
-
-        throw new \InvalidArgumentException($prefix . gettype($override) . "\" given.");
+        return $to;
     }
 }
