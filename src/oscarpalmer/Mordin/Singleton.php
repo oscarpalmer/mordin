@@ -8,21 +8,20 @@ namespace oscarpalmer\Mordin;
  */
 class Singleton
 {
-    /**
-     * Protected constructor to prevent
-     * initialization from the outside.
-     */
-    protected function __construct(){}
+    protected function __construct()
+    {
+        /** Protected constructor to prevent initialization from the outside. */
+    }
 
-    /**
-     * Prevents cloning of instances.
-     */
-    private function __clone(){}
+    private function __clone()
+    {
+        /** Prevents cloning of instances. */
+    }
 
-    /**
-     * Prevents unserializing of instances.
-     */
-    private function __wakeup(){}
+    private function __wakeup()
+    {
+        /** Prevents unserializing of instances. */
+    }
 
     /** Static functions. */
 
