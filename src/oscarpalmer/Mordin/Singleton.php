@@ -8,6 +8,10 @@ namespace oscarpalmer\Mordin;
  */
 class Singleton
 {
+    // Ignore unused methods.
+    //
+    // @codeCoverageIgnoreStart
+
     protected function __construct()
     {
         /** Protected constructor to prevent initialization from the outside. */
@@ -23,7 +27,7 @@ class Singleton
         /** Prevents unserializing of instances. */
     }
 
-    /** Static functions. */
+    // @codeCoverageIgnoreEnd
 
     /**
      * Retrieve the class instance.
