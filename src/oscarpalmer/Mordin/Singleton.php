@@ -11,7 +11,7 @@ class Singleton
     /**
      * @var array Array of Singleton class instances.
      */
-    public static $instances = array();
+    protected static $instances = array();
 
     // Ignore unused methods.
     //

@@ -7,5 +7,5 @@ class Mordin
     /**
      * @var string Current version number.
      */
-    const VERSION = "0.3.1";
+    const VERSION = "0.3.2";
 }
