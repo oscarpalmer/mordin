@@ -8,13 +8,18 @@ namespace oscarpalmer\Mordin;
  */
 class Singleton
 {
+    /**
+     * @var array Array of Singleton class instances.
+     */
+    public static $instances = array();
+
     // Ignore unused methods.
     //
     // @codeCoverageIgnoreStart
 
-    protected function __construct()
+    private function __construct()
     {
-        /** Protected constructor to prevent initialization from the outside. */
+        /** Private constructor to prevent initialization from the outside. */
     }
 
     private function __clone()
@@ -36,12 +41,12 @@ class Singleton
      */
     public static function getInstance()
     {
-        static $instance = null;
+        $name = get_called_class();
 
-        if (is_null($instance)) {
-            $instance = new static;
+        if (array_key_exists($name, static::$instances) === false) {
+            static::$instances[$name] = new static;
         }
 
-        return $instance;
+        return static::$instances[$name];
     }
 }
