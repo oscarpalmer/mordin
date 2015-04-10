@@ -14,7 +14,7 @@ class File
     public static function create($file, $data = "")
     {
         if (is_file($file) === false) {
-            return self::write($file, $data);
+            return static::write($file, $data);
         }
 
         return false;
@@ -28,7 +28,7 @@ class File
      */
     public static function delete($file)
     {
-        if (self::exists($file)) {
+        if (static::exists($file)) {
             if (is_file($file)) {
                 return unlink($file);
             }
@@ -80,7 +80,7 @@ class File
      */
     public static function read($file)
     {
-        if (self::exists($file) && is_file($file)) {
+        if (static::exists($file) && is_file($file)) {
             return file_get_contents($file);
         }
 
@@ -96,7 +96,7 @@ class File
      */
     public static function rename($old, $new)
     {
-        if (self::exists($old) && self::exists($new) === false) {
+        if (static::exists($old) && static::exists($new) === false) {
             return rename($old, $new);
         }
 
@@ -114,7 +114,7 @@ class File
      */
     public static function size($file)
     {
-        if (self::exists($file) && is_file($file)) {
+        if (static::exists($file) && is_file($file)) {
             return filesize($file);
         }
 
